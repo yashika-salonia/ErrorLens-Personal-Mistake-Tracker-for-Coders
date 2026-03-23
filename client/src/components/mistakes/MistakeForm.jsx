@@ -1,78 +1,88 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
-const MistakeForm = ({ addMistake }) => {
-
+function MistakeForm({ addMistake }) {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
-  const [description, setDescription] = useState("");
+  const [desc, setDesc] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     if (!title || !category) return;
 
+    const now = new Date();
+
     const newMistake = {
       id: Date.now(),
       title,
       category,
-      description,
-      date: new Date().toLocaleDateString()
+      desc,
+
+      // ✅ Indian Date Format
+      date: now.toLocaleDateString("en-IN", {
+        timeZone: "Asia/Kolkata",
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      }),
+
+      // ✅ Indian Time Format
+      time: now.toLocaleTimeString("en-IN", {
+        timeZone: "Asia/Kolkata",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      }),
     };
 
     addMistake(newMistake);
 
     setTitle("");
     setCategory("");
-    setDescription("");
+    setDesc("");
   };
 
   return (
-    <div className="bg-white p-6 rounded-xl shadow-md">
-
-      <h2 className="text-xl font-semibold mb-4 text-gray-700">
+    <div className="bg-white/80 backdrop-blur-lg p-6 rounded-2xl shadow-xl">
+      <h2 className="text-xl font-semibold mb-4">
         Add New Mistake
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
 
         <input
-          type="text"
           placeholder="Mistake Title"
-          className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-indigo-400 outline-none"
+          className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-400"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
 
         <select
-          className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-indigo-400 outline-none"
+          className="w-full p-3 border rounded-lg"
           value={category}
           onChange={(e) => setCategory(e.target.value)}
         >
           <option value="">Select Category</option>
-          <option value="Study">Study</option>
-          <option value="Coding">Coding</option>
-          <option value="Communication">Communication</option>
-          <option value="Time Management">Time Management</option>
+          <option>Syntax</option>
+          <option>Logic</option>
+          <option>Runtime</option>
+          <option>UI</option>
         </select>
 
         <textarea
           placeholder="Description"
-          className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-indigo-400 outline-none"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          className="w-full p-3 border rounded-lg"
+          value={desc}
+          onChange={(e) => setDesc(e.target.value)}
         />
 
-        <button
-          type="submit"
-          className="w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition"
-        >
-          Add Mistake
+        <button className="w-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white py-3 rounded-lg hover:scale-105 transition">
+          Add Mistake 🚀
         </button>
 
       </form>
-
     </div>
   );
-};
+}
 
 export default MistakeForm;
