@@ -10,6 +10,7 @@ const userRoutes = require("./routes/userRoutes");
 const problemRoutes = require("./routes/problemRoutes");
 const testCaseRoutes = require("./routes/testCaseRoutes");
 const submissionRoutes = require("./routes/submissionRoutes");
+const analyticsRoutes = require("./routes/analyticsRoutes");
 
 const app = express()
 
@@ -21,6 +22,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/problems", problemRoutes);
 app.use("/api/testcases", testCaseRoutes);
 app.use("/api/submissions", submissionRoutes);
+app.use("/api/analytics", analyticsRoutes);
 
 app.use(errorHandler)
 

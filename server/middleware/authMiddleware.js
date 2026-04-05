@@ -3,9 +3,9 @@ const User=require('../models/User')
 
 const auth= async (req, res, next)=>{
     try{
-        const header=req.headers.auhorization
+        const header = req.headers.authorization
 
-        if(!header || !header.startWith("Bearer")){
+        if (!header || !header.startsWith("Bearer ")) {
             return res.status(401).json({success: false, message:'No token provided. '})
         }
 
