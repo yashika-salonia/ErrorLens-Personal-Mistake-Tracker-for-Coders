@@ -1,20 +1,22 @@
 const express = require("express");
 const router = express.Router();
-const { asyncHandler } = require('../middleware/asyncHandler');
-const { protect } = require('../middleware/authMiddleware');
+const auth = require("../middleware/authMiddleware");
 
 const {
   registerUser,
   loginUser,
-  getProfile,
-} = require("../controllers/userController");
+  getMyProfile,
+  updateMyProfile,
+  changePassword,
+} = require("../controllers/userController")
 
+// Public
+router.post("/register", registerUser);
+router.post("/login", loginUser);
 
-router.post("/register", asyncHandler(registerUser));
-router.post("/login", asyncHandler(loginUser));
-router.get("/profile", protect, asyncHandler(getProfile));
-router.get("/test", asyncHandler(async (req, res, next) => {
-  res.json({ msg: "asyncHandler works!" });
-}));
+// Protected
+router.get("/me", auth, getMyProfile);
+router.put("/me", auth, updateMyProfile);
+router.put("/me/password", auth, changePassword);
 
 module.exports = router;

@@ -1,31 +1,31 @@
-const jwt = require('jsonwebtoken')
-const User = require('../models/User')
+const jwt= require('jsonwebtoken')
+const User=require('../models/User')
 
-const protect = async (req, res, next) => {
-    try {
-        let token
-        // check if token is there
-        if(req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
-            // extract token
-            token = req.headers.authorization.split(" ")[1]
+const auth= async (req, res, next)=>{
+    try{
+        const header=req.headers.auhorization
+
+        if(!header || !header.startWith("Bearer")){
+            return res.status(401).json({success: false, message:'No token provided. '})
         }
-        // if no token, then reject
-        if(!token) 
-            return res.status(401).json({msg: "Not authorized"})
-        
-        // check if token is valid, expired, decodes payload
-        const decoded = jwt.verify(token, process.env.JWT_SECRET)
-        const user = await User.findById(decoded.id).select("-password")
 
-        if(!user)
-            return res.status(401).json({msg: "User not found"})
-        
-        req.user = user
+        const token=header.split(" ")[1]
+        const decoded=jwt.verify(token, process.env.JWT_SECRET)
+        const user=await User.findById(decoded.id)
+
+        if(!user){
+            return res.status(401).json({success: false, message: 'No token - User no longer exists'})
+        }
+
+        req.user=user
         next()
-    }catch(err) {
-        console.log(err.message)
-        return res.status(401).json({msg: "Invalid or expired token"})
+    } catch(err){
+        const message =
+          err.name === "TokenExpiredError"
+            ? "Token has expired."
+            : "Invalid token.";
+        res.status(401).json({ success: false, message });
     }
 }
 
-module.exports = { protect }
+module.exports=auth
