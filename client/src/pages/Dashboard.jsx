@@ -1,80 +1,158 @@
 import { useEffect, useState } from "react";
 import PageWrapper from "../components/layout/PageWrapper";
-import MistakeForm from "../components/mistakes/MistakeForm";
-import MistakeList from "../components/mistakes/MistakeList";
 
 function Dashboard() {
   const [mistakes, setMistakes] = useState([]);
 
-  // Load from localStorage
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem("mistakes")) || [];
     setMistakes(data);
   }, []);
 
-  // Add mistake
-  const addMistake = (newMistake) => {
-    const updated = [...mistakes, newMistake];
-    setMistakes(updated);
-    localStorage.setItem("mistakes", JSON.stringify(updated));
+  // 🔥 Format Date + Time (IMPORTANT)
+  const formatDate = (m) => {
+    if (m.time) return `${m.date} • ${m.time}`;
+
+    const d = new Date(m.date);
+
+    return (
+      d.toLocaleDateString("en-IN", {
+        timeZone: "Asia/Kolkata",
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      }) +
+      " • " +
+      d.toLocaleTimeString("en-IN", {
+        timeZone: "Asia/Kolkata",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      })
+    );
   };
 
-  // Pattern detection
-  const detectPatterns = () => {
-    const count = {};
-    mistakes.forEach((m) => {
-      count[m.category] = (count[m.category] || 0) + 1;
-    });
+  const total = mistakes.length;
 
-    return Object.entries(count)
-      .filter(([_, val]) => val >= 2)
-      .map(([key]) => key);
-  };
+  const categoryCount = {};
+  mistakes.forEach((m) => {
+    categoryCount[m.category] = (categoryCount[m.category] || 0) + 1;
+  });
 
-  const patterns = detectPatterns();
+  const mostCommon =
+    Object.keys(categoryCount).length > 0
+      ? Object.keys(categoryCount).reduce((a, b) =>
+          categoryCount[a] > categoryCount[b] ? a : b
+        )
+      : "None";
+
+  const lastMistake = mistakes[mistakes.length - 1];
 
   return (
     <PageWrapper>
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">
-        Dashboard 🚀
-      </h1>
+      <div className="max-w-6xl mx-auto">
 
-      {/* Cards */}
-      <div className="grid grid-cols-3 gap-6 mb-8">
-        <div className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white p-6 rounded-xl shadow-lg">
-          <h2>Total Mistakes</h2>
-          <p className="text-3xl font-bold">{mistakes.length}</p>
-        </div>
-
-        <div className="bg-gradient-to-r from-green-400 to-teal-500 text-white p-6 rounded-xl shadow-lg">
-          <h2>Categories</h2>
-          <p className="text-3xl font-bold">
-            {[...new Set(mistakes.map((m) => m.category))].length}
+        {/* 🔥 Heading */}
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold tracking-tight">
+            Dashboard
+          </h1>
+          <p className="text-gray-500 mt-1">
+            Track your coding mistakes & improve smarter 🚀
           </p>
         </div>
 
-        <div className="bg-gradient-to-r from-pink-500 to-red-500 text-white p-6 rounded-xl shadow-lg">
-          <h2>Latest</h2>
-          <p className="text-lg">
-            {mistakes.length > 0
-              ? mistakes[mistakes.length - 1].title
-              : "No mistakes"}
-          </p>
+        {/* 🔥 Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+
+          <div className="bg-white/70 backdrop-blur-lg border border-gray-200 p-6 rounded-2xl shadow hover:shadow-xl transition">
+            <p className="text-gray-500 text-sm">Total Mistakes</p>
+            <h2 className="text-3xl font-bold mt-2">{total}</h2>
+          </div>
+
+          <div className="bg-white/70 backdrop-blur-lg border border-gray-200 p-6 rounded-2xl shadow hover:shadow-xl transition">
+            <p className="text-gray-500 text-sm">Top Category</p>
+            <h2 className="text-2xl font-semibold mt-2 text-indigo-600">
+              {mostCommon}
+            </h2>
+          </div>
+
+          <div className="bg-white/70 backdrop-blur-lg border border-gray-200 p-6 rounded-2xl shadow hover:shadow-xl transition">
+            <p className="text-gray-500 text-sm">Last Mistake</p>
+            <h2 className="text-sm mt-2 font-medium">
+              {lastMistake ? lastMistake.title : "No data"}
+            </h2>
+          </div>
+
         </div>
+
+        {/* 🔥 Insights */}
+        <div className="grid md:grid-cols-2 gap-6 mb-8">
+
+          <div className="bg-gradient-to-r from-yellow-100 to-yellow-50 p-6 rounded-2xl border border-yellow-200 shadow-sm">
+            <h3 className="font-semibold mb-2 text-yellow-700">
+              ⚠️ Pattern Detection
+            </h3>
+            <p className="text-sm text-gray-700">
+              You frequently make{" "}
+              <span className="font-bold text-yellow-700">
+                {mostCommon}
+              </span>{" "}
+              mistakes.
+            </p>
+          </div>
+
+          <div className="bg-gradient-to-r from-indigo-100 to-purple-100 p-6 rounded-2xl border border-indigo-200 shadow-sm">
+            <h3 className="font-semibold mb-2 text-indigo-700">
+              💡 Smart Suggestion
+            </h3>
+            <p className="text-sm text-gray-700">
+              Focus more on{" "}
+              <span className="font-bold text-indigo-700">
+                {mostCommon}
+              </span>{" "}
+              problems to improve faster.
+            </p>
+          </div>
+
+        </div>
+
+        {/* 🔥 Recent Activity */}
+        <div className="bg-white/70 backdrop-blur-xl p-6 rounded-2xl shadow-lg border border-gray-100 hover:shadow-2xl transition-all duration-300">
+          <h2 className="text-lg font-semibold mb-4">
+            Recent Activity
+          </h2>
+
+          {mistakes.length === 0 ? (
+            <p className="text-gray-500 text-sm">
+              No mistakes added yet.
+            </p>
+          ) : (
+            mistakes
+              .slice(-5)
+              .reverse()
+              .map((m) => (
+                <div
+                  key={m.id}
+                  className="flex justify-between items-center border-b last:border-none py-3 hover:bg-gray-50 px-2 rounded-lg transition"
+                >
+                  <div>
+                    <p className="font-medium">{m.title}</p>
+                    <p className="text-xs text-gray-500">
+                      {m.category}
+                    </p>
+                  </div>
+
+                  {/* ✅ FINAL DATE + TIME FIX */}
+                  <span className="text-xs text-gray-400">
+                    {formatDate(m)}
+                  </span>
+                </div>
+              ))
+          )}
+        </div>
+
       </div>
-
-      {/* Pattern Warning */}
-      {patterns.length > 0 && (
-        <div className="bg-yellow-100 border-l-4 border-yellow-500 p-4 mb-6 rounded">
-          ⚠️ You frequently make mistakes in:{" "}
-          <b>{patterns.join(", ")}</b>
-        </div>
-      )}
-
-      {/* Form */}
-      <MistakeForm addMistake={addMistake} />
-      <MistakeList mistakes={mistakes} />
-      
     </PageWrapper>
   );
 }
