@@ -1,15 +1,10 @@
-function Card({children}){
-
-  return(
-
-    <div className="bg-white shadow-lg rounded-2xl p-6 hover:shadow-xl transition">
-
+export default function Card({ children, className = '', padding = true, hover = false }) {
+  return (
+    <div
+      className={`profile-card ${hover ? 'card-hover' : ''} ${className}`}
+      style={!padding ? { padding: 0, overflow: 'hidden' } : {}}
+    >
       {children}
-
     </div>
-
-  )
-
+  );
 }
-
-export default Card

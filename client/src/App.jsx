@@ -1,35 +1,31 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
+import { AuthProvider } from './context/AuthContext';
+import AppRoutes from './routes/AppRoutes';
 
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Dashboard from "./pages/Dashboard";
-import Mistakes from "./pages/Mistakes";
-import Analytics from "./pages/Analytics";
+// CSS imports — YE ZAROORI HAI
+import './App.css';
 
-import { isLoggedIn } from "./services/api";
-
-const ProtectedRoute = ({ children }) => {
-  return isLoggedIn() ? children : <Navigate to="/login" replace />;
-};
-
-function App() {
+export default function App() {
   return (
-    <Routes>
-
-      <Route path="/" element={<Navigate to="/login" />} />
-
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-
-      {/* 🔥 IMPORTANT */}
-      <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-      <Route path="/mistakes" element={<ProtectedRoute><Mistakes /></ProtectedRoute>} />
-      <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
-
-      <Route path="*" element={<Navigate to="/login" />} />
-
-    </Routes>
+    <BrowserRouter>
+      <AuthProvider>
+        <Toaster
+          position="top-right"
+          toastOptions={{
+            style: {
+              background: '#1e293b',
+              color: '#f1f5f9',
+              border: '1px solid #334155',
+              borderRadius: '10px',
+              fontSize: '14px',
+            },
+            success: { iconTheme: { primary: '#22d3a6', secondary: '#1e293b' } },
+            error:   { iconTheme: { primary: '#f87171', secondary: '#1e293b' } },
+          }}
+        />
+        <AppRoutes />
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
-
-export default App;

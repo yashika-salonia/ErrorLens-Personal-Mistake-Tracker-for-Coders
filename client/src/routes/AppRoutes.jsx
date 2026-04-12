@@ -1,82 +1,53 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate } from 'react-router-dom';
+import ProtectedRoute from '../components/layout/ProtectedRoute';
+import Navbar from '../components/layout/Navbar';
+import AdminPage from '../pages/AdminPage';
+import LoginPage from '../pages/LoginPage';
+import RegisterPage from '../pages/RegisterPage';
+import DashboardPage from '../pages/DashboardPage';
+import ProblemsPage from '../pages/ProblemsPage';
+import ProblemDetailPage from '../pages/ProblemDetailPage';
+import SubmitPage from '../pages/SubmitPage';
+import SubmissionsPage from '../pages/SubmissionsPage';
+import ProfilePage from '../pages/ProfilePage';
 
-import Login from "../pages/Login";
-import Register from "../pages/Register";
-import Dashboard from "../pages/Dashboard";
-import Mistakes from "../pages/Mistakes";
-import Analytics from "../pages/Analytics";
-
-import { isLoggedIn } from "../services/api";
-
-// 🔐 Protected Route
-const ProtectedRoute = ({ children }) => {
-  return isLoggedIn() ? children : <Navigate to="/" replace />;
-};
-
-// 🔓 Public Route (login/register)
-const PublicRoute = ({ children }) => {
-  return !isLoggedIn() ? children : <Navigate to="/dashboard" replace />;
-};
-
-function AppRoutes() {
+function AppLayout({ children }) {
   return (
-    <Routes>
-
-      {/* Default */}
-      <Route path="/" element={<Navigate to="/login" />} />
-
-      {/* Public Routes */}
-      <Route
-        path="/login"
-        element={
-          <PublicRoute>
-            <Login />
-          </PublicRoute>
-        }
-      />
-
-      <Route
-        path="/register"
-        element={
-          <PublicRoute>
-            <Register />
-          </PublicRoute>
-        }
-      />
-
-      {/* Protected Routes */}
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/mistakes"
-        element={
-          <ProtectedRoute>
-            <Mistakes />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/analytics"
-        element={
-          <ProtectedRoute>
-            <Analytics />
-          </ProtectedRoute>
-        }
-      />
-
-      {/* Fallback */}
-      <Route path="*" element={<Navigate to="/login" />} />
-
-    </Routes>
+    <div className="app-layout">
+      <Navbar />
+      <main className="main-content">{children}</main>
+    </div>
   );
 }
 
-export default AppRoutes;
+export default function AppRoutes() {
+  return (
+    <Routes>
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
+      <Route path="/" element={<Navigate to="/dashboard" replace />} />
+
+      <Route path="/dashboard" element={
+        <ProtectedRoute><AppLayout><DashboardPage /></AppLayout></ProtectedRoute>
+      } />
+      <Route path="/problems" element={
+        <ProtectedRoute><AppLayout><ProblemsPage /></AppLayout></ProtectedRoute>
+      } />
+      <Route path="/problems/:id" element={
+        <ProtectedRoute><AppLayout><ProblemDetailPage /></AppLayout></ProtectedRoute>
+      } />
+      <Route path="/problems/:id/submit" element={
+        <ProtectedRoute><AppLayout><SubmitPage /></AppLayout></ProtectedRoute>
+      } />
+      <Route path="/submissions" element={
+        <ProtectedRoute><AppLayout><SubmissionsPage /></AppLayout></ProtectedRoute>
+      } />
+      <Route path="/profile" element={
+        <ProtectedRoute><AppLayout><ProfilePage /></AppLayout></ProtectedRoute>
+      } />
+      <Route path="/admin" element={
+        <ProtectedRoute><AppLayout><AdminPage /></AppLayout></ProtectedRoute>
+      } />
+    </Routes>
+  );
+}

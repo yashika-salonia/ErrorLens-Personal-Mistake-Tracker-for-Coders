@@ -1,16 +1,35 @@
-function Button({children,onClick}){
+export default function Button({
+  children,
+  variant = 'primary',
+  size = 'md',
+  fullWidth = false,
+  loading = false,
+  disabled = false,
+  onClick,
+  type = 'button',
+  className = '',
+}) {
+  const base = 'btn';
+  const variants = {
+    primary: 'btn-primary',
+    ghost:   'btn-ghost',
+    danger:  'btn-danger',
+    icon:    'btn-icon',
+  };
+  const sizes = {
+    sm: 'btn-sm',
+    md: '',
+    lg: 'btn-lg',
+  };
 
-  return(
-
+  return (
     <button
+      type={type}
+      className={`${base} ${variants[variant]} ${sizes[size]} ${fullWidth ? 'btn-full' : ''} ${className}`}
+      disabled={disabled || loading}
       onClick={onClick}
-      className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
     >
-      {children}
+      {loading ? <span className="spinner"></span> : children}
     </button>
-
-  )
-
+  );
 }
-
-export default Button
