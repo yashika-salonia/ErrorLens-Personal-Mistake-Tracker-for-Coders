@@ -3,7 +3,6 @@
 > **Turn your coding errors into learning opportunities.**  
 > ErrorLens tracks every submission, identifies recurring mistake patterns, and builds a personalized *Mistake Personality* profile to help you grow as a developer.
 
----
 
 ## Table of Contents
 
@@ -15,7 +14,6 @@
 - [API Documentation](#api-documentation)
 - [Features](#features)
 
----
 
 ## Overview
 
@@ -30,7 +28,6 @@ The platform lets users log their coding submissions, tag mistake types, and vie
 - Language-wise accuracy stats
 - An AI-derived **Mistake Personality** profile unique to each user
 
----
 
 ## Tech Stack
 
@@ -44,7 +41,6 @@ The platform lets users log their coding submissions, tag mistake types, and vie
 | Routing      | React Router DOM v6               |
 | Security     | Helmet, CORS                      |
 
----
 
 ## Project Structure
 
@@ -129,7 +125,6 @@ mistake-tracker/
     └── server.js                  # Entry point
 ```
 
----
 
 ## Getting Started
 
@@ -173,7 +168,6 @@ Frontend runs at `http://localhost:5173`
 
 > Make sure both servers are running at the same time.
 
----
 
 ## Environment Variables
 
@@ -196,7 +190,6 @@ PORT=5000
 - **PUT** `/api/users/me` → Update profile (Auth)
 - **PUT** `/api/users/me/password` → Change password (Auth)
 
----
 
 ## Problems — `/api/problems`
 
@@ -208,8 +201,6 @@ PORT=5000
 - **PUT** `/api/problems/:id` → Update problem (Auth)
 - **DELETE** `/api/problems/:id` → Delete problem (Auth)
 
----
-
 ## Test Cases — `/api/testcases`
 
 - **POST** `/api/testcases` → Create test case
@@ -219,7 +210,6 @@ PORT=5000
 - **PUT** `/api/testcases/:id` → Update test case
 - **DELETE** `/api/testcases/:id` → Delete test case
   
----
 
 ## Submissions — `/api/submissions`
 
@@ -229,8 +219,6 @@ PORT=5000
 - **GET** `/api/submissions/problem/:problemId` → Submissions for a problem
 - **GET** `/api/submissions/:id` → Get single submission (owner only)
 - **PUT** `/api/submissions/:id/mistakes` → Update mistake tags
-
----
 
 ## Analytics — `/api/analytics`
 
@@ -287,7 +275,5 @@ Each user gets a unique personality label based on their top mistake type:
 | The Data Whisperer     | Database queries     |
 | The Rusher             | Validation errors    |
 | The Explorer           | Mixed / Unknown      |
-
----
 
 *Made with purpose — because fixing bugs is easy, understanding them is hard.*
